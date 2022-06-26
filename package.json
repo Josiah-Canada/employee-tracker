@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/Josiah-Canada/employee-tracker#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "inquirer": "^8.0.0",
+    "mysql2": "^2.3.3"
   }
 }
