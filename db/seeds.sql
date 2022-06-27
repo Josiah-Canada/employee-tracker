@@ -5,3 +5,7 @@ VALUES ("HR", "Human Resources that Resource Humans"),
 INSERT INTO employee(first_name, last_name, role_id)
 VALUES ("Erving", "Lopez", "7984678"),
 ("Irine", "Brown", "7544432");
+
+INSERT INTO role(name, salary, department)
+VALUES ("Librarian", "77,000", "Library"),
+("Repair-man", "58,000", "Electric")

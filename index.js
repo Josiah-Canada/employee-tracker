@@ -26,7 +26,10 @@ const questions = [
     choices: [
       "View Department",
       "Add new Department",
-      "Add new Employee"
+      "Add new Employee",
+      "View Employees",
+      "Add Role",
+      "View Role"
     ]
   }
 ]
@@ -41,6 +44,12 @@ function startApp() {
       addDept()
     } else if(answers.choice == "Add new Employee"){
       addEmp()
+    } else if(answers.choice == "View Employees"){
+      viewEmp()
+    } else if(answers.choice == "Add Role"){
+      addRole()
+    } else if(answers.choice == "View Role"){
+      viewRole()
     }
   })
 }
@@ -131,7 +140,71 @@ function addEmp() {
       console.log('\n')
       console.log("Added a new employee")
       console.log('\n')
+
       startApp()
     })
+  })
+}
+
+function viewEmp() {
+  const sqlString = `
+  SELECT * 
+  FROM employee`
+  
+  db.query(sqlString, (err, data) => {
+    if(err) throw err;
+    console.log('\n');
+    console.table(data);
+    console.log('\n');
+
+    startApp()
+  })
+}
+
+function addRole() {
+  inquirer.prompt([
+    {
+      type: "input",
+      message: "What is the name of this role",
+      name: "roleNmae"
+    },
+    {
+      type: "input",
+      message: "What is the salary for this role",
+      name: "roleSalary"
+    },
+    {
+      type: "input",
+      message: "What is the department of this role",
+      name: "roleDepartment"
+    }
+  ]).then(roleAnswers => {
+    const sqlString = `
+    INSERT INTO role(name, salary, department)
+    VALUES(?,?,?)`
+
+    db.query(sqlString, [roleAnswers.roleName, roleAnswers.roleSalary, roleAnswers.roleDepartment], (err, data) => {
+      if (err) throw err
+      console.log('\n')
+      console.log('Added a new role')
+      console.log('\n')
+
+      startApp()
+    })
+  })
+}
+
+function viewRole() {
+  const sqlString = `
+  SELECT * 
+  FROM role`
+  
+  db.query(sqlString, (err, data) => {
+    if(err) throw err;
+    console.log('\n');
+    console.table(data);
+    console.log('\n');
+
+    startApp()
   })
 }
