@@ -8,4 +8,8 @@ VALUES ("Erving", "Lopez", "7984678"),
 
 INSERT INTO role(name, salary, department)
 VALUES ("Librarian", "77,000", "Library"),
-("Repair-man", "58,000", "Electric")
+("Repair-man", "58,000", "Electric");
+
+UPDATE employee
+SET first_name = 'Toni', last_name = 'Childs', role_id = "5678844"
+WHERE employeeId = *;

@@ -29,7 +29,8 @@ const questions = [
       "Add new Employee",
       "View Employees",
       "Add Role",
-      "View Role"
+      "View Role",
+      "Update an employee"
     ]
   }
 ]
@@ -50,6 +51,8 @@ function startApp() {
       addRole()
     } else if(answers.choice == "View Role"){
       viewRole()
+    } else if(answers.choice == "Update an employee"){
+      upEmp
     }
   })
 }
@@ -161,12 +164,48 @@ function viewEmp() {
   })
 }
 
+function upEmp() {
+  inquirer.prompt([
+    {
+      type: "input",
+      message: "which employee would you like to change?",
+      name: "chooseEmp"
+    },
+    {
+      type: "input",
+      message: "What is the updated first name?",
+      name: "upName"
+    },
+    {
+      type: "input",
+      message: "what is the updated last name?",
+      name: "upLastName"
+    },
+    {
+      type: "input",
+      message: "what is their updated role id?",
+      name: "upRoleId"
+    }
+  ]).then(upEmpAnswers => {
+    const sqlString = `
+    UPDATE employee(first_name, last_name, role_id)
+    VALUES(?,?,?)`
+
+    db.query(sqlString, [upEmpAnswers.chooseEmp, upEmpAnswers.upName, upEmpAnswers.upLastName, upEmpAnswers.upRoleId], (err, data) => {
+      if(err) throw err
+      console.log('\n')
+      console.log('Updated Employee')
+      console.log('\n')
+    })
+  })
+}
+
 function addRole() {
   inquirer.prompt([
     {
       type: "input",
       message: "What is the name of this role",
-      name: "roleNmae"
+      name: "roleName"
     },
     {
       type: "input",
@@ -180,7 +219,7 @@ function addRole() {
     }
   ]).then(roleAnswers => {
     const sqlString = `
-    INSERT INTO role(name, salary, department)
+    INSERT INTO role(title, salary, department_id)
     VALUES(?,?,?)`
 
     db.query(sqlString, [roleAnswers.roleName, roleAnswers.roleSalary, roleAnswers.roleDepartment], (err, data) => {
