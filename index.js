@@ -52,7 +52,7 @@ function startApp() {
     } else if(answers.choice == "View Role"){
       viewRole()
     } else if(answers.choice == "Update an employee"){
-      upEmp
+      upEmp()
     }
   })
 }
@@ -72,20 +72,20 @@ function viewDept() {
   })
 }
 
-// function viewRole() {
-//   const sqlstring = `
-//   SELECT role-id
-//   FROM employee`
+ function viewRole() {
+   const sqlstring = `
+   SELECT role-id
+   FROM employee`
 
-//   db.query(sqlString, (err, data) => {
-//     if(err) throw err;
-//     console.log('\n');
-//     console.table(data);
-//     console.log('\n');
+   db.query(sqlString, (err, data) => {
+     if(err) throw err;
+     console.log('\n');
+     console.table(data);
+     console.log('\n');
 
-//     startApp()
-//   })
-// }
+     startApp()
+   })
+ }
 
 function addDept() {
   inquirer.prompt([
@@ -165,40 +165,45 @@ function viewEmp() {
 }
 
 function upEmp() {
+  let employeeArray = []
+  db.query("SELECT * FROM employee", (err,data) => {
+    if (err) {
+      console.log(err)
+    } else {
+      employeeArray = data.map(function(employee) {
+        return {name: employee.first_name + ` ` + employee.last_name, value:employee.id}
+  })}
   inquirer.prompt([
     {
-      type: "input",
+      type: "list",
+      choices: employeeArray, 
+      // gives answer to where id = ?
       message: "which employee would you like to change?",
       name: "chooseEmp"
-    },
-    {
-      type: "input",
-      message: "What is the updated first name?",
-      name: "upName"
-    },
-    {
-      type: "input",
-      message: "what is the updated last name?",
-      name: "upLastName"
     },
     {
       type: "input",
       message: "what is their updated role id?",
       name: "upRoleId"
     }
-  ]).then(upEmpAnswers => {
+  ]).then((upEmpAnswers) => { 
     const sqlString = `
-    UPDATE employee(first_name, last_name, role_id)
-    VALUES(?,?,?)`
+    UPDATE employee SET role_id = ? WHERE id = ?`
 
-    db.query(sqlString, [upEmpAnswers.chooseEmp, upEmpAnswers.upName, upEmpAnswers.upLastName, upEmpAnswers.upRoleId], (err, data) => {
-      if(err) throw err
+    db.query(sqlString, [upEmpAnswers.upRoleId, upEmpAnswers.chooseEmp], (err, data) => {
+
+      if(err) {
+        throw err 
+      } else {
       console.log('\n')
       console.log('Updated Employee')
       console.log('\n')
+      startApp()
+      }
     })
   })
-}
+})}
+
 
 function addRole() {
   inquirer.prompt([
@@ -214,7 +219,7 @@ function addRole() {
     },
     {
       type: "input",
-      message: "What is the department of this role",
+      message: "What is the department of this role (id #)",
       name: "roleDepartment"
     }
   ]).then(roleAnswers => {
